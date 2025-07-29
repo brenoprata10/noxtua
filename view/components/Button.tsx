@@ -4,5 +4,13 @@ export default function Button({
   className,
   ...props
 }: React.ComponentProps<"button">) {
-  return <button className={clsx("p-3 rounded-md", className)} {...props} />;
+  return (
+    <button
+      className={clsx(
+        "p-2.5 bg-primary text-active-primary rounded-lg cursor-pointer",
+        className
+      )}
+      {...props}
+    />
+  );
 }
