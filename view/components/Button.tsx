@@ -1,6 +1,9 @@
 import clsx from "clsx";
 
-export default function Button({ className, ...props }) {
+export default function Button({
+  className,
+  ...props
+}: React.ComponentProps<"button">) {
   return (
     <button
       className={clsx(
