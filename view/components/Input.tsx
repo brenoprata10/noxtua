@@ -9,7 +9,7 @@ export default function Input({
     <input
       {...props}
       onChange={onChange}
-      className={clsx("p-3 border border-gray-400 rounded-md", className)}
+      className={clsx("p-3 rounded-md", className)}
     />
   );
 }
