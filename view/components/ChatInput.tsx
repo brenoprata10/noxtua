@@ -22,7 +22,11 @@ export default function ChatInput() {
       className="bg-chat rounded-xl p-4 border-[2px] border-[#F3F2F1] flex flex-col gap-1 cursor-text"
       onClick={onClickChatInput}
     >
-      <TextArea ref={textAreaRef} placeholder="Chat with Noxtua" />
+      <TextArea
+        ref={textAreaRef}
+        placeholder="Chat with Noxtua"
+        name="prompt"
+      />
       <Button
         type="submit"
         className="w-fit self-end"

@@ -13,9 +13,11 @@
     "@react-router/node": "^7.5.0",
     "@react-router/serve": "^7.5.0",
     "isbot": "^5.1.17",
+    "node-cache": "^5.1.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router": "^7.5.0"
+    "react-router": "^7.5.0",
+    "uuid-by-string": "^4.0.0"
   },
   "devDependencies": {
     "@react-router/dev": "^7.5.0",

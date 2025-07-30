@@ -4,6 +4,7 @@ import Sidepane from "view/components/Sidepane";
 import { createDefaultFunTranslationService } from "io/service/FunTranslationService";
 import { useActionData } from "react-router";
 import type { Translation } from "domain/types/Translation";
+import type { Route } from "./+types/translate";
 
 type TranslationActionPayload =
   | { success: true; data: Translation }
@@ -11,19 +12,22 @@ type TranslationActionPayload =
 
 export const action = async ({
   request,
-}): Promise<TranslationActionPayload> => {
+}: Route.ClientActionArgs): Promise<TranslationActionPayload> => {
   try {
+    const formData = await request.formData();
+    const prompt = formData.get("prompt");
+    if (!prompt) {
+      throw Error("Prompt is empty. Please contact support.");
+    }
     const translationService = createDefaultFunTranslationService();
     const translation = await translationService.getTranslation(
-      "brave people deploy to production and go for lunch"
+      prompt.toString()
     );
-    // should I do something with that request?
 
     return { success: true, data: translation };
   } catch (error) {
     console.error(error);
     if (error instanceof Error) {
-      error.message;
       return { success: false, error: error.message };
     }
   }
