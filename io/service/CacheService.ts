@@ -27,3 +27,14 @@ class CacheService {
 // Instancing CacheService here because it needs to behave as a Singleton
 const cacheService = new CacheService();
 export default cacheService;
+
+export const cached = <T>(key: string, callback: () => T): T => {
+  const cachedValue = cacheService.getValue<T>(key);
+  if (cachedValue) {
+    return cachedValue;
+  }
+
+  const data = callback();
+  cacheService.setValue(key, data);
+  return data;
+};
