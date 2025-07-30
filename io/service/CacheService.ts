@@ -19,6 +19,7 @@ class CacheService {
     return value;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setValue(key: string, value: any) {
     this.cache?.set(getUuid(key), value);
   }

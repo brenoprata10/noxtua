@@ -2,21 +2,26 @@ import { TranslateForm } from "../translate/form";
 import Content from "view/components/Content";
 import Sidepane from "view/components/Sidepane";
 import { createDefaultFunTranslationService } from "io/service/FunTranslationService";
-import { useActionData } from "react-router";
+import { useFetcher } from "react-router";
 import type { Translation } from "domain/types/Translation";
 import type { Route } from "./+types/translate";
 import Chat from "view/components/Chat";
+import { useCallback, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { getChatCount } from "~/store/selectors/chatSelectors";
+import { createChat } from "~/store/slices/chatSlice";
+import { useAppSelector } from "~/store";
 
 type TranslationActionPayload =
-  | { success: true; data: Translation }
+  | { success: true; translation: Translation }
   | { success: false; error: string };
 
 export const action = async ({
   request,
 }: Route.ClientActionArgs): Promise<TranslationActionPayload> => {
   try {
-    const formData = await request.formData();
-    const prompt = formData.get("prompt");
+    const data = await request.json();
+    const prompt = data.prompt;
     if (!prompt) {
       throw Error("Prompt is empty. Please contact support.");
     }
@@ -25,7 +30,7 @@ export const action = async ({
       prompt.toString()
     );
 
-    return { success: true, data: translation };
+    return { success: true, translation };
   } catch (error) {
     console.error(error);
     if (error instanceof Error) {
@@ -40,9 +45,26 @@ export const action = async ({
 };
 
 export default function Translate() {
-  const translation = useActionData<typeof action>();
-  const output = translation?.success ? translation.data.text : "";
-  const errorMessage = !translation?.success ? translation?.error : "";
+  const chatCount = useAppSelector(getChatCount);
+  const dispatch = useDispatch();
+  const fetcher = useFetcher<TranslationActionPayload>();
+  const output = fetcher.data?.success ? fetcher.data?.translation.text : "";
+
+  useEffect(() => {
+    if (!chatCount) {
+      dispatch(createChat("New Chat"));
+    }
+  }, [chatCount, dispatch]);
+
+  const onSendMessage = useCallback(
+    (prompt: string) => {
+      fetcher.submit(
+        { prompt },
+        { action: "/translate", method: "post", encType: "application/json" }
+      );
+    },
+    [fetcher]
+  );
 
   return (
     <div className="flex h-full grid grid-cols-[300px_1fr]">
@@ -51,9 +73,9 @@ export default function Translate() {
       <Sidepane>It would be nice to see past translations here.</Sidepane>
       <Content>
         <Chat />
-        <TranslateForm />
+        {fetcher.state !== "idle" && <p>Saving...</p>}
+        <TranslateForm onSubmit={onSendMessage} />
         {output}
-        {errorMessage}
       </Content>
     </div>
   );

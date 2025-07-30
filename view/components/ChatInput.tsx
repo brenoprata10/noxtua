@@ -1,9 +1,17 @@
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
 import Button from "./Button";
 import TextArea from "./TextArea";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, type ChangeEvent } from "react";
 
-export default function ChatInput() {
+export default function ChatInput({
+  value,
+  onChange,
+  onSubmit,
+}: {
+  value: string;
+  onChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
+  onSubmit: () => void;
+}) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const onClickChatInput = useCallback(() => {
@@ -13,8 +21,9 @@ export default function ChatInput() {
   const onClickSubmitButton = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
       event.stopPropagation();
+      onSubmit();
     },
-    []
+    [onSubmit]
   );
 
   return (
@@ -24,8 +33,10 @@ export default function ChatInput() {
     >
       <TextArea
         ref={textAreaRef}
+        value={value}
         placeholder="Chat with Noxtua"
         name="prompt"
+        onChange={onChange}
       />
       <Button
         type="submit"
