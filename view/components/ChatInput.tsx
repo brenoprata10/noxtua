@@ -19,7 +19,7 @@ export default function ChatInput() {
 
   return (
     <div
-      className="bg-chat rounded-xl p-4 border-[2px] border-[#F3F2F1] flex flex-col gap-1 cursor-text"
+      className="bg-chat w-full rounded-xl p-4 border-[2px] border-[#F3F2F1] flex flex-col gap-1 cursor-text"
       onClick={onClickChatInput}
     >
       <TextArea

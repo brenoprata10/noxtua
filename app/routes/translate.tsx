@@ -5,6 +5,7 @@ import { createDefaultFunTranslationService } from "io/service/FunTranslationSer
 import { useActionData } from "react-router";
 import type { Translation } from "domain/types/Translation";
 import type { Route } from "./+types/translate";
+import Chat from "view/components/Chat";
 
 type TranslationActionPayload =
   | { success: true; data: Translation }
@@ -44,11 +45,12 @@ export default function Translate() {
   const errorMessage = !translation?.success ? translation?.error : "";
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-full grid grid-cols-[300px_1fr]">
       <title>New React Router App</title>
       <meta name="description" content="Welcome to React Router!" />
       <Sidepane>It would be nice to see past translations here.</Sidepane>
       <Content>
+        <Chat />
         <TranslateForm />
         {output}
         {errorMessage}

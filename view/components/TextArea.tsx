@@ -8,6 +8,7 @@ export default function TextArea({
   return (
     <textarea
       {...props}
+      autoFocus
       onChange={onChange}
       className={clsx(
         "bg-chat resize-none select-none outline-none",

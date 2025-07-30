@@ -28,13 +28,16 @@ class CacheService {
 const cacheService = new CacheService();
 export default cacheService;
 
-export const cached = <T>(key: string, callback: () => T): T => {
+export const cached = async <T>(
+  key: string,
+  callback: () => Promise<T>
+): Promise<T> => {
   const cachedValue = cacheService.getValue<T>(key);
   if (cachedValue) {
     return cachedValue;
   }
 
-  const data = callback();
+  const data = await callback();
   cacheService.setValue(key, data);
   return data;
 };
