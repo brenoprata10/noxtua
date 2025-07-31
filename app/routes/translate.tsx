@@ -14,7 +14,7 @@ import { useAppSelector } from "~/store";
 import MessageType from "domain/enums/MessageType";
 
 type TranslationActionPayload =
-  | { success: true; translation: Translation }
+  | { success: true; translation: Translation; chatId: string }
   | { success: false; error: string };
 
 export const action = async ({
@@ -22,7 +22,7 @@ export const action = async ({
 }: Route.ClientActionArgs): Promise<TranslationActionPayload> => {
   try {
     const data = await request.json();
-    const prompt = data.prompt;
+    const { prompt, chatId } = data;
     if (!prompt) {
       throw Error("Prompt is empty. Please contact support.");
     }
@@ -31,7 +31,7 @@ export const action = async ({
       prompt.toString()
     );
 
-    return { success: true, translation };
+    return { success: true, translation, chatId };
   } catch (error) {
     console.error(error);
     if (error instanceof Error) {
@@ -53,13 +53,14 @@ export default function Translate() {
 
   useEffect(() => {
     if (!chatCount) {
-      dispatch(createChat("New Chat"));
+      dispatch(createChat());
     }
   }, [chatCount, dispatch]);
 
   // Add received response from fetcher to redux store
   useEffect(() => {
     const isSuccessPrompt = fetcher.data?.success;
+    const chatId = isSuccessPrompt ? fetcher.data?.chatId : undefined;
     const output = isSuccessPrompt
       ? fetcher.data?.translation.text
       : fetcher.data?.error;
@@ -67,6 +68,7 @@ export default function Translate() {
     if (output && fetcher.state === "idle") {
       dispatch(
         addMessage({
+          chatId,
           content: output,
           type: isSuccessPrompt ? MessageType.ANSWER : MessageType.ERROR,
         })
@@ -76,17 +78,20 @@ export default function Translate() {
 
   const onSendMessage = useCallback(
     (prompt: string) => {
+      if (!chat?.id) {
+        return;
+      }
       dispatch(addMessage({ content: prompt, type: MessageType.QUESTION }));
       fetcher.submit(
-        { prompt },
+        { prompt, chatId: chat.id },
         { action: "/translate", method: "post", encType: "application/json" }
       );
     },
-    [fetcher, dispatch]
+    [fetcher, dispatch, chat?.id]
   );
 
   return (
-    <div className="flex h-full grid grid-cols-[300px_1fr]">
+    <div className="flex h-full grid grid-cols-[300px_1fr] max-md:grid-cols-1">
       <title>New React Router App</title>
       <meta name="description" content="Welcome to React Router!" />
       <Sidepanel />

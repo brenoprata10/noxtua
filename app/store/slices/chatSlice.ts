@@ -34,17 +34,23 @@ export const chatSlice = createSlice({
     },
     addMessage: (
       state,
-      action: PayloadAction<Pick<ChatMessage, "content" | "type">>
+      action: PayloadAction<
+        Pick<ChatMessage, "content" | "type"> & { chatId?: string }
+      >
     ) => {
+      const { content, chatId: chatIdPayload, type } = action.payload;
       const selectedChatId = state.selectedChat;
-      if (!selectedChatId) {
+      const chatId = chatIdPayload ?? selectedChatId;
+
+      if (!chatId) {
         throw Error("Cannot add message to unknown chat.");
       }
-      state.data[selectedChatId].messages.push({
+      state.data[chatId].messages.push({
         id: uuid(),
         createdAt: new Date().toISOString(),
         engine: state.selectedEngine,
-        ...action.payload,
+        content,
+        type,
       });
     },
   },

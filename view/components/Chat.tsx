@@ -15,7 +15,7 @@ export default function Chat({ data }: { data: ChatData | null }) {
   return (
     <div
       ref={ref}
-      className="bg-chat rounded-xl w-full h-full overflow-auto flex flex-col gap-4 p-3"
+      className="bg-chat rounded-xl border-[2px] border-[#F3F2F1] w-full h-full overflow-auto flex flex-col gap-4 p-3"
     >
       {data?.messages.map((message) => (
         <ChatMessage key={message.id} message={message} />
