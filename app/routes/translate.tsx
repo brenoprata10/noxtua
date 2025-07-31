@@ -8,9 +8,10 @@ import type { Route } from "./+types/translate";
 import Chat from "view/components/Chat";
 import { useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { getChatCount } from "~/store/selectors/chatSelectors";
-import { createChat } from "~/store/slices/chatSlice";
+import { getChatCount, getSelectedChat } from "~/store/selectors/chatSelectors";
+import { addMessage, createChat } from "~/store/slices/chatSlice";
 import { useAppSelector } from "~/store";
+import MessageType from "domain/enums/MessageType";
 
 type TranslationActionPayload =
   | { success: true; translation: Translation }
@@ -46,9 +47,9 @@ export const action = async ({
 
 export default function Translate() {
   const chatCount = useAppSelector(getChatCount);
+  const chat = useAppSelector(getSelectedChat);
   const dispatch = useDispatch();
   const fetcher = useFetcher<TranslationActionPayload>();
-  const output = fetcher.data?.success ? fetcher.data?.translation.text : "";
 
   useEffect(() => {
     if (!chatCount) {
@@ -56,14 +57,32 @@ export default function Translate() {
     }
   }, [chatCount, dispatch]);
 
+  // Add received response from fetcher to redux store
+  useEffect(() => {
+    const isSuccessPrompt = fetcher.data?.success;
+    const output = isSuccessPrompt
+      ? fetcher.data?.translation.text
+      : fetcher.data?.error;
+
+    if (output && fetcher.state === "idle") {
+      dispatch(
+        addMessage({
+          content: output,
+          type: isSuccessPrompt ? MessageType.ANSWER : MessageType.ERROR,
+        })
+      );
+    }
+  }, [fetcher.state, fetcher.data, dispatch]);
+
   const onSendMessage = useCallback(
     (prompt: string) => {
+      dispatch(addMessage({ content: prompt, type: MessageType.QUESTION }));
       fetcher.submit(
         { prompt },
         { action: "/translate", method: "post", encType: "application/json" }
       );
     },
-    [fetcher]
+    [fetcher, dispatch]
   );
 
   return (
@@ -72,10 +91,9 @@ export default function Translate() {
       <meta name="description" content="Welcome to React Router!" />
       <Sidepane>It would be nice to see past translations here.</Sidepane>
       <Content>
-        <Chat />
+        <Chat data={chat} />
         {fetcher.state !== "idle" && <p>Saving...</p>}
         <TranslateForm onSubmit={onSendMessage} />
-        {output}
       </Content>
     </div>
   );

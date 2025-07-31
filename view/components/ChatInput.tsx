@@ -22,6 +22,7 @@ export default function ChatInput({
     (event: React.MouseEvent<HTMLButtonElement>) => {
       event.stopPropagation();
       onSubmit();
+      textAreaRef.current?.focus();
     },
     [onSubmit]
   );
@@ -39,7 +40,7 @@ export default function ChatInput({
         onChange={onChange}
       />
       <Button
-        type="submit"
+        type="button"
         className="w-fit self-end"
         onClick={onClickSubmitButton}
       >

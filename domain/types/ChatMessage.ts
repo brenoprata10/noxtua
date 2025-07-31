@@ -1,9 +1,10 @@
 import type MessageType from "domain/enums/MessageType";
-import type { Engine } from "./Engine";
+import type TranslationRepo from "domain/enums/TranslationRepo";
 
 export type ChatMessage = {
-  message: string;
+  id: string;
+  content: string;
   type: MessageType;
-  engine: Engine;
-  createdAt: Date;
+  engine: TranslationRepo;
+  createdAt: string;
 };

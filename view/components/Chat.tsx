@@ -1,3 +1,25 @@
-export default function Chat() {
-  return <div className="bg-chat rounded-xl h-full">CHAT</div>;
+import type { ChatData } from "domain/types/ChatData";
+import { useEffect, useRef } from "react";
+import ChatMessage from "view/components/ChatMessage";
+
+export default function Chat({ data }: { data: ChatData | null }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+    ref.current.scroll({ top: ref.current.scrollHeight, behavior: "smooth" });
+  }, [data]);
+
+  return (
+    <div
+      ref={ref}
+      className="bg-chat rounded-xl w-full h-full overflow-auto flex flex-col gap-4 p-3"
+    >
+      {data?.messages.map((message) => (
+        <ChatMessage key={message.id} message={message} />
+      ))}
+    </div>
+  );
 }
