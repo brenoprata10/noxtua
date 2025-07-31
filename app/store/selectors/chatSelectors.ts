@@ -3,8 +3,13 @@ import type { RootState } from "..";
 
 export const getChat = (state: RootState) => state.chat;
 
-export const getSelectedChat = (state: RootState) =>
-  state.chat.selectedChat ? state.chat.data[state.chat.selectedChat] : null;
+export const getSelectedChat = createSelector([getChat], (chat) =>
+  chat.selectedChat ? chat.data[chat.selectedChat] : null
+);
+
+export const getChatHistory = createSelector([getChat], (chat) =>
+  Object.values(chat.data)
+);
 
 export const getChatCount = createSelector(
   [getChat],

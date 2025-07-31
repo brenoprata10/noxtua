@@ -3,6 +3,7 @@ import TranslationRepo from "domain/enums/TranslationRepo";
 import type { ChatsObject } from "domain/types/ChatsObject";
 import type { ChatMessage } from "domain/types/ChatMessage";
 import { v4 as uuid } from "uuid";
+import type { ChatData } from "domain/types/ChatData";
 
 export interface ChatSlice {
   data: ChatsObject;
@@ -19,16 +20,17 @@ export const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-    createChat: (state, action: PayloadAction<string>) => {
-      const title = action.payload;
+    createChat: (state) => {
       const id = uuid();
       state.data[id] = {
         id,
-        title,
         messages: [],
         createdAt: new Date().toISOString(),
       };
       state.selectedChat = id;
+    },
+    selectChat: (state, action: PayloadAction<Pick<ChatData, "id">>) => {
+      state.selectedChat = action.payload.id;
     },
     addMessage: (
       state,
@@ -48,5 +50,5 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { createChat, addMessage } = chatSlice.actions;
+export const { createChat, addMessage, selectChat } = chatSlice.actions;
 export default chatSlice.reducer;

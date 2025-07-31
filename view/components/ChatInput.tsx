@@ -2,6 +2,7 @@ import { PaperPlaneIcon } from "@radix-ui/react-icons";
 import Button from "./Button";
 import TextArea from "./TextArea";
 import { useCallback, useRef, type ChangeEvent } from "react";
+import clsx from "clsx";
 
 export default function ChatInput({
   value,
@@ -40,8 +41,9 @@ export default function ChatInput({
         onChange={onChange}
       />
       <Button
+        disabled={!value}
         type="button"
-        className="w-fit self-end"
+        className={clsx(["w-fit self-end"])}
         onClick={onClickSubmitButton}
       >
         <PaperPlaneIcon />

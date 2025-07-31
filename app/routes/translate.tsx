@@ -1,6 +1,6 @@
 import { TranslateForm } from "../translate/form";
 import Content from "view/components/Content";
-import Sidepane from "view/components/Sidepane";
+import Sidepanel from "view/components/Sidepanel";
 import { createDefaultFunTranslationService } from "io/service/FunTranslationService";
 import { useFetcher } from "react-router";
 import type { Translation } from "domain/types/Translation";
@@ -89,7 +89,7 @@ export default function Translate() {
     <div className="flex h-full grid grid-cols-[300px_1fr]">
       <title>New React Router App</title>
       <meta name="description" content="Welcome to React Router!" />
-      <Sidepane>It would be nice to see past translations here.</Sidepane>
+      <Sidepanel />
       <Content>
         <Chat data={chat} />
         {fetcher.state !== "idle" && <p>Saving...</p>}

@@ -6,10 +6,11 @@ export default function Button({
 }: React.ComponentProps<"button">) {
   return (
     <button
-      className={clsx(
+      className={clsx([
         "p-2.5 bg-primary text-active-primary rounded-lg cursor-pointer",
-        className
-      )}
+        props.disabled && "opacity-70 !cursor-not-allowed",
+        className,
+      ])}
       {...props}
     />
   );
