@@ -1,15 +1,19 @@
-import NodeCache from "node-cache";
+import { LRUCache } from "lru-cache";
 import getUuid from "uuid-by-string";
 
 class CacheService {
   private static instance: CacheService;
-  private cache?: NodeCache;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private cache?: LRUCache<string, any>;
 
   constructor() {
     if (CacheService.instance) {
       return CacheService.instance;
     }
-    this.cache = new NodeCache();
+    this.cache = new LRUCache({
+      max: 1000,
+      ttl: 60 * 60 * 1000,
+    });
     CacheService.instance = this;
   }
 
