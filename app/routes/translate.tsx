@@ -9,7 +9,11 @@ import Chat from "view/components/Chat";
 import { useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { getChatCount, getSelectedChat } from "~/store/selectors/chatSelectors";
-import { addMessage, createChat } from "~/store/slices/chatSlice";
+import {
+  addLoadingMessage,
+  addMessage,
+  createChat,
+} from "~/store/slices/chatSlice";
 import { useAppSelector } from "~/store";
 import MessageType from "domain/enums/MessageType";
 
@@ -86,18 +90,18 @@ export default function Translate() {
         { prompt, chatId: chat.id },
         { action: "/translate", method: "post", encType: "application/json" }
       );
+      dispatch(addLoadingMessage());
     },
     [fetcher, dispatch, chat?.id]
   );
 
   return (
     <div className="flex h-full grid grid-cols-[300px_1fr] max-md:grid-cols-1">
-      <title>New React Router App</title>
-      <meta name="description" content="Welcome to React Router!" />
+      <title>Chat with Noxtua</title>
+      <meta name="description" content="Welcome to Noxtua chat!" />
       <Sidepanel />
       <Content>
         <Chat data={chat} />
-        {fetcher.state !== "idle" && <p>Saving...</p>}
         <TranslateForm onSubmit={onSendMessage} />
       </Content>
     </div>

@@ -4,6 +4,7 @@ import type { ChatsObject } from "domain/types/ChatsObject";
 import type { ChatMessage } from "domain/types/ChatMessage";
 import { v4 as uuid } from "uuid";
 import type { ChatData } from "domain/types/ChatData";
+import MessageType from "domain/enums/MessageType";
 
 export interface ChatSlice {
   data: ChatsObject;
@@ -45,6 +46,14 @@ export const chatSlice = createSlice({
       if (!chatId) {
         throw Error("Cannot add message to unknown chat.");
       }
+      // Remove loading message is there is any
+      const loadingMessageIndex = state.data[chatId].messages.findIndex(
+        (message) => message.type === MessageType.LOADING
+      );
+      if (loadingMessageIndex !== -1) {
+        state.data[chatId].messages.splice(loadingMessageIndex, 1);
+      }
+
       state.data[chatId].messages.push({
         id: uuid(),
         createdAt: new Date().toISOString(),
@@ -53,8 +62,23 @@ export const chatSlice = createSlice({
         type,
       });
     },
+    addLoadingMessage: (state) => {
+      const selectedChatId = state.selectedChat;
+      if (!selectedChatId) {
+        throw Error("Cannot add message to unknown chat.");
+      }
+      console.log("add loading message");
+      state.data[selectedChatId].messages.push({
+        id: uuid(),
+        createdAt: new Date().toISOString(),
+        engine: state.selectedEngine,
+        content: "",
+        type: MessageType.LOADING,
+      });
+    },
   },
 });
 
-export const { createChat, addMessage, selectChat } = chatSlice.actions;
+export const { createChat, addMessage, selectChat, addLoadingMessage } =
+  chatSlice.actions;
 export default chatSlice.reducer;
