@@ -76,9 +76,17 @@ export const chatSlice = createSlice({
         type: MessageType.LOADING,
       });
     },
+    updateSelectedEngine: (state, action: PayloadAction<TranslationRepo>) => {
+      state.selectedEngine = action.payload;
+    },
   },
 });
 
-export const { createChat, addMessage, selectChat, addLoadingMessage } =
-  chatSlice.actions;
+export const {
+  createChat,
+  addMessage,
+  selectChat,
+  addLoadingMessage,
+  updateSelectedEngine,
+} = chatSlice.actions;
 export default chatSlice.reducer;

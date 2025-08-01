@@ -3,6 +3,9 @@ import type { RootState } from "..";
 
 export const getChat = (state: RootState) => state.chat;
 
+export const getSelectedEngine = (state: RootState) =>
+  state.chat.selectedEngine;
+
 export const getSelectedChat = createSelector([getChat], (chat) =>
   chat.selectedChat ? chat.data[chat.selectedChat] : null
 );

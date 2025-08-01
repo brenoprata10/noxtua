@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { createChat, selectChat } from "~/store/slices/chatSlice";
 import SidepanelHeader from "./SidepanelHeader";
 import SidepanelChatButton from "./SidepanelChatButton";
+import ModelPicker from "./ModelPicker";
 
 export default function Sidepanel() {
   const dispatch = useDispatch();
@@ -51,6 +52,7 @@ export default function Sidepanel() {
           />
         ))}
       </div>
+      <ModelPicker />
     </div>
   );
 }

@@ -1,14 +1,17 @@
 import { TranslateForm } from "../translate/form";
 import Content from "view/components/Content";
 import Sidepanel from "view/components/Sidepanel";
-import { createDefaultFunTranslationService } from "io/service/FunTranslationService";
 import { useFetcher } from "react-router";
 import type { Translation } from "domain/types/Translation";
 import type { Route } from "./+types/translate";
 import Chat from "view/components/Chat";
 import { useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { getChatCount, getSelectedChat } from "~/store/selectors/chatSelectors";
+import {
+  getChatCount,
+  getSelectedChat,
+  getSelectedEngine,
+} from "~/store/selectors/chatSelectors";
 import {
   addLoadingMessage,
   addMessage,
@@ -16,6 +19,15 @@ import {
 } from "~/store/slices/chatSlice";
 import { useAppSelector } from "~/store";
 import MessageType from "domain/enums/MessageType";
+import { createYodaFunTranslationService } from "io/service/fun-translation/YodaTranslationService";
+import { createPirateFunTranslationService } from "io/service/fun-translation/PirateFunTranslationService";
+import TranslationRepo from "domain/enums/TranslationRepo";
+import type { FunTranslationService } from "io/service/fun-translation/FunTranslationService";
+
+const ENGINE_CONFIG: Record<TranslationRepo, () => FunTranslationService> = {
+  [TranslationRepo.YODA]: createYodaFunTranslationService,
+  [TranslationRepo.PIRATE]: createPirateFunTranslationService,
+};
 
 type TranslationActionPayload =
   | { success: true; translation: Translation; chatId: string }
@@ -26,11 +38,15 @@ export const action = async ({
 }: Route.ClientActionArgs): Promise<TranslationActionPayload> => {
   try {
     const data = await request.json();
-    const { prompt, chatId } = data;
+    const { prompt, chatId, engine } = data as {
+      prompt: string;
+      chatId: string;
+      engine: TranslationRepo;
+    };
     if (!prompt) {
       throw Error("Prompt is empty. Please contact support.");
     }
-    const translationService = createDefaultFunTranslationService();
+    const translationService = ENGINE_CONFIG[engine]();
     const translation = await translationService.getTranslation(
       prompt.toString()
     );
@@ -52,6 +68,7 @@ export const action = async ({
 export default function Translate() {
   const chatCount = useAppSelector(getChatCount);
   const chat = useAppSelector(getSelectedChat);
+  const selectedEngine = useAppSelector(getSelectedEngine);
   const dispatch = useDispatch();
   const fetcher = useFetcher<TranslationActionPayload>();
 
@@ -87,12 +104,12 @@ export default function Translate() {
       }
       dispatch(addMessage({ content: prompt, type: MessageType.QUESTION }));
       fetcher.submit(
-        { prompt, chatId: chat.id },
+        { prompt, chatId: chat.id, engine: selectedEngine },
         { action: "/translate", method: "post", encType: "application/json" }
       );
       dispatch(addLoadingMessage());
     },
-    [fetcher, dispatch, chat?.id]
+    [fetcher, dispatch, chat?.id, selectedEngine]
   );
 
   return (
