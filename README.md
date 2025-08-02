@@ -9,8 +9,8 @@ I'm thrilled to share my tech assignment project with you all! I poured my heart
 <img width="1262" height="1172" alt="Screenshot_20250802_182644" src="https://github.com/user-attachments/assets/2226d2a0-9510-4cd5-9b6e-6da3782135cc" />
 
 <img width="1260" height="1177" alt="Screenshot_20250802_182924" src="https://github.com/user-attachments/assets/df1fef47-252c-4472-931d-61da214e6022" />
-## Tech Stack
 
+## Tech Stack
 
 - React
 - Redux
