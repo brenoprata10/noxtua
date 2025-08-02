@@ -6,6 +6,9 @@ import { defineConfig } from "eslint/config";
 import reactHooks from 'eslint-plugin-react-hooks';
 
 export default defineConfig([
+	{
+		ignores: ['.react-router/**/*'],
+	},
 	{ 
 		files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
 		plugins: { js }, 
@@ -16,11 +19,20 @@ export default defineConfig([
 		languageOptions: { globals: globals.browser },
 	},
 	tseslint.configs.recommended,
-	pluginReact.configs.flat.recommended,
+	{
+		...pluginReact.configs.flat.recommended,
+		"settings": {
+			"react": {
+				"version": "detect",
+				"defaultVersion": "19.0.0",
+			}
+		}
+	},
 	{
 		rules: {
 			"react/react-in-jsx-scope": "off",
 			"react/jsx-uses-react": "off",
+			"@typescript-eslint/no-namespace": "off"
 		}
 	}
 ]);
