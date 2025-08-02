@@ -12,7 +12,7 @@ class YodaFunTranslationService implements FunTranslationService {
     this.repo = repo;
   }
 
-  async getTranslation(text: string): Promise<Translation> {
+  getTranslation(text: string): Promise<Translation> {
     return cached(`yoda-${text}`, async () => {
       const response = await this.repo.getTranslation(text);
       if (!response.ok) {

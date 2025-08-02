@@ -46,7 +46,7 @@ export const chatSlice = createSlice({
       if (!chatId) {
         throw Error("Cannot add message to unknown chat.");
       }
-      // Remove loading message is there is any
+      // Remove loading message if there is any
       const loadingMessageIndex = state.data[chatId].messages.findIndex(
         (message) => message.type === MessageType.LOADING
       );

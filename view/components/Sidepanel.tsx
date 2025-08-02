@@ -42,7 +42,7 @@ export default function Sidepanel() {
         allowChatCreation={!isSelectedChatEmpty}
         onCreateNewChat={onCreateNewChat}
       />
-      <div className="overflow-auto flex flex-col gap-1 h-full">
+      <div className="overflow-auto overflow-x-hidden flex flex-col gap-1 h-full">
         {chats.map((chat) => (
           <SidepanelChatButton
             key={chat.id}

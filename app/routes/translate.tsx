@@ -29,13 +29,17 @@ const ENGINE_CONFIG: Record<TranslationRepo, () => FunTranslationService> = {
   [TranslationRepo.PIRATE]: createPirateFunTranslationService,
 };
 
-type TranslationActionPayload =
-  | { success: true; translation: Translation; chatId: string }
-  | { success: false; error: string };
+type TranslationActionPayload = { chatId: string | null } & (
+  | { success: true; translation: Translation }
+  | { success: false; error: string }
+);
 
 export const action = async ({
   request,
 }: Route.ClientActionArgs): Promise<TranslationActionPayload> => {
+  // Store selected chatId outside of try catch clause to be
+  // able to return its value if any errors occur
+  let selectedChatId = null;
   try {
     const data = await request.json();
     const { prompt, chatId, engine } = data as {
@@ -43,6 +47,7 @@ export const action = async ({
       chatId: string;
       engine: TranslationRepo;
     };
+    selectedChatId = chatId;
     if (!prompt) {
       throw Error("Prompt is empty. Please contact support.");
     }
@@ -55,12 +60,13 @@ export const action = async ({
   } catch (error) {
     console.error(error);
     if (error instanceof Error) {
-      return { success: false, error: error.message };
+      return { success: false, error: error.message, chatId: selectedChatId };
     }
   }
 
   return {
     success: false,
+    chatId: selectedChatId,
     error: "Translation failed. Please contact support.",
   };
 };
@@ -81,7 +87,7 @@ export default function Translate() {
   // Add received response from fetcher to redux store
   useEffect(() => {
     const isSuccessPrompt = fetcher.data?.success;
-    const chatId = isSuccessPrompt ? fetcher.data?.chatId : undefined;
+    const chatId = fetcher.data?.chatId ?? undefined;
     const output = isSuccessPrompt
       ? fetcher.data?.translation.text
       : fetcher.data?.error;
@@ -89,7 +95,7 @@ export default function Translate() {
     if (output && fetcher.state === "idle") {
       dispatch(
         addMessage({
-          chatId,
+          chatId: chatId,
           content: output,
           type: isSuccessPrompt ? MessageType.ANSWER : MessageType.ERROR,
         })
