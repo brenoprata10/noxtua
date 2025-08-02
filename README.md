@@ -1,3 +1,41 @@
+# Noxtua tech challenge
+
+Hey Noxtua Team! 😊
+
+I'm thrilled to share my tech assignment project with you all! I poured my heart into this one, tinkering away and having a blast bringing it to life. Can't wait to chat with you about it soon and hear your thoughts!
+
+## Screenshots
+
+## Tech Stack
+
+- React
+- Redux
+- NodeJS
+- Typescript
+- Motion (Animations)
+- TailwindCSS
+- Vite
+
+### Getting Started
+
+Install project dependencies
+```bash
+npm install
+```
+Run the project locally
+```bash
+npm run dev
+```
+
+### AI Usage
+
+All of the code used in this project was created by myself, I do use AI tho, but only as a "google on steroids" replacement.
+
+I often consult Grok when I find myself stuck on something. 
+PS: I do not make usage of generative AI such as Github Copilot or anything like that
+
+-------------------------------------------------------------------------------------------------------------
+
 # Welcome to Our UI Engineer Coding Challenge!
 
 A modern, almost production-ready [fun translations](https://funtranslations.com/) client app.
